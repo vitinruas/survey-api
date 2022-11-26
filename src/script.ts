@@ -1,1 +1,1 @@
-const data = "Hello!";
+console.log('Just hello!');
