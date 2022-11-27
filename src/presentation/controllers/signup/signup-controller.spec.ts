@@ -2,18 +2,34 @@ import { SignUpController } from './signup-controller'
 import { IEmailValidatorAdapter, IHttpRequest, IHttpResponse } from "../../interfaces/index"
 import { MissingFieldError, InvalidFieldError, ServerError } from "../../errors"
 
+
+const makeEmailValidatorStub = (): IEmailValidatorAdapter => {
+  class EmailValidatorStub {
+    isValid (email: string): boolean {
+      return true
+    }
+  }
+  return new EmailValidatorStub()
+}
+
+const makeEmailValidatorStubWithError = (): IEmailValidatorAdapter => {
+  class EmailValidatorStub {
+    isValid (email: string): boolean {
+      throw new Error('Any error!')
+    }
+  }
+  return new EmailValidatorStub()
+}
+
+
 interface ISut {
   sut: SignUpController,
   emailValidatorStub: IEmailValidatorAdapter
 }
 
 const makeSut = (): ISut => {
-  class EmailValidatorStub {
-    isValid (email: string): boolean {
-      return true
-    }
-  }
-  const emailValidatorStub: IEmailValidatorAdapter = new EmailValidatorStub()
+
+  const emailValidatorStub: IEmailValidatorAdapter = makeEmailValidatorStub()
   const sut: SignUpController = new SignUpController(emailValidatorStub)
   return {
     sut,
@@ -116,12 +132,7 @@ describe('SignUp Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
   test('Should return 500 if EmailValidatorAdapter throws an error', () => {
-    class EmailValidatorStub {
-      isValid (email: string): boolean {
-        throw new Error('Any error!')
-      }
-    }
-    const emailValidatorStub: IEmailValidatorAdapter = new EmailValidatorStub()
+    const emailValidatorStub: IEmailValidatorAdapter = makeEmailValidatorStubWithError()
     const sut: SignUpController = new SignUpController(emailValidatorStub)
     const httpRequest: IHttpRequest = {
       body: {
