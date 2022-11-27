@@ -3,6 +3,7 @@ import { IHttpRequest, IHttpResponse } from '../../interfaces/protocols/http-pro
 import { MissingFieldError } from '../../errors/missing-field-error'
 import { InvalidFieldError } from '../../errors/invalid-field-error'
 import { IEmailValidatorAdapter } from '../../interfaces/dependencies/email-validator-adapter-dependency'
+import { ServerError } from '../../errors/server-error'
 
 interface ISut {
   sut: SignUpController,
@@ -116,5 +117,26 @@ describe('SignUp Controller', () => {
     sut.handle(httpRequest)
 
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
+  })
+  test('Should return 500 if EmailValidatorAdapter throws an error', () => {
+    class EmailValidatorStub {
+      isValid (email: string): boolean {
+        throw new Error('Any error!')
+      }
+    }
+    const emailValidatorStub: IEmailValidatorAdapter = new EmailValidatorStub()
+    const sut: SignUpController = new SignUpController(emailValidatorStub)
+    const httpRequest: IHttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    }
+
+    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
