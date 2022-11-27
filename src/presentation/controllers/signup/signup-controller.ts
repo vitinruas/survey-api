@@ -4,11 +4,13 @@ import { MissingFieldError } from '../../errors/missing-field-error'
 import { badRequest } from "../../helper/http-helper"
 import { InvalidFieldError } from "../../errors/invalid-field-error"
 import { IEmailValidatorAdapter } from "../../interfaces/dependencies/email-validator-adapter-dependency"
+import { ServerError } from "../../errors/server-error"
 
 export class SignUpController implements IController {
   constructor(private readonly emailValidatorAdapter: IEmailValidatorAdapter) {}
   handle(httpRequest: IHttpRequest): IHttpResponse {
-    const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
+    try {
+      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
 
     for (const field of requiredFields) {
       if (!httpRequest.body[field])
@@ -21,6 +23,12 @@ export class SignUpController implements IController {
 
     return {
       statusCode: 201,
+    }
+    } catch (error) {
+      return {
+        statusCode: 500,
+        body: new ServerError()
+      }
     }
 
   }
