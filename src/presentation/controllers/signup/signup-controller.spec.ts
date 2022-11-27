@@ -1,6 +1,5 @@
 import { SignUpController } from './signup-controller'
-import { IHttpRequest, IHttpResponse } from '../../interfaces/protocols/http-protocol'
-import { IEmailValidatorAdapter } from '../../interfaces/dependencies/email-validator-adapter-dependency'
+import { IEmailValidatorAdapter, IHttpRequest, IHttpResponse } from "../../interfaces/index"
 import { MissingFieldError, InvalidFieldError, ServerError } from "../../errors"
 
 interface ISut {
