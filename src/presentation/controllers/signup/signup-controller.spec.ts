@@ -1,6 +1,6 @@
 import { SignUpController } from './signup-controller'
 import { IHttpRequest, IHttpResponse } from '../../protocols/http-protocol'
-import { MissingParamError } from '../../errors/missing-param-error'
+import { MissingFieldError } from '../../errors/missing-field-error'
 
 describe('SignUp Controller', () => {
   test('Should return 400 if no name is provided', () => {
@@ -16,7 +16,7 @@ describe('SignUp Controller', () => {
     const httpResponse: IHttpResponse = sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('name'))
+    expect(httpResponse.body).toEqual(new MissingFieldError('name'))
   })
   test('Should return 400 if no email is provided', () => {
     const sut = new SignUpController()
@@ -31,6 +31,6 @@ describe('SignUp Controller', () => {
     const httpResponse: IHttpResponse = sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('email'))
+    expect(httpResponse.body).toEqual(new MissingFieldError('email'))
   })
 })

@@ -1,15 +1,14 @@
 import { IHttpRequest, IHttpResponse } from "../../protocols/http-protocol"
-import { MissingParamError } from '../../errors/missing-param-error'
+import { MissingFieldError } from '../../errors/missing-field-error'
 import { badRequest } from "../../helper/http-helper"
 
 export class SignUpController {
   handle(httpRequest: IHttpRequest): IHttpResponse {
-    if (!httpRequest.body.name) {
-      return badRequest(new MissingParamError('name'))
-    }
+    const requiredFields = ['name', 'email']
 
-    if (!httpRequest.body.email) {
-      return badRequest(new MissingParamError('email'))
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field])
+        return badRequest(new MissingFieldError(field))
     }
 
     return {
