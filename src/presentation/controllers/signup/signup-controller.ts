@@ -1,9 +1,8 @@
-import { IHttpRequest, IHttpResponse } from "../../interfaces/protocols/http-protocol"
 import { IController } from "../../interfaces/protocols/controller-protocol"
-import { MissingFieldError } from '../../errors/missing-field-error'
+import { IHttpRequest, IHttpResponse } from "../../interfaces/protocols/http-protocol"
 import { badRequest, serverError } from "../../helper/http-helper"
-import { InvalidFieldError } from "../../errors/invalid-field-error"
 import { IEmailValidatorAdapter } from "../../interfaces/dependencies/email-validator-adapter-dependency"
+import { MissingFieldError, InvalidFieldError } from "../../errors"
 
 export class SignUpController implements IController {
   constructor(private readonly emailValidatorAdapter: IEmailValidatorAdapter) {}
