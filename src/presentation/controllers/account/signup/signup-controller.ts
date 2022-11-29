@@ -1,4 +1,4 @@
-import { badRequest, serverError } from '../../../helper/http-helper'
+import { badRequest, created, serverError } from '../../../helper/http-helper'
 import { MissingFieldError, InvalidFieldError } from '../../../errors'
 import {
   IController,
@@ -41,14 +41,12 @@ export class SignUpController implements IController {
       const emailIsValid = this.emailValidatorAdapter.isValid(email)
       if (!emailIsValid) return badRequest(new InvalidFieldError('email'))
 
-      // call a method class which knows how to create an user account
+      // call a method class which knows how to create an user account and return it
       const addAccountDTO: IAddAccountDTO = { name, email, password }
       const createdAccount: IAccountEntitie =
         this.addAccountUseCase.addAccount(addAccountDTO)
-      return {
-        statusCode: 201,
-        body: createdAccount,
-      }
+
+      return created(createdAccount)
     } catch (error) {
       console.error(error)
       return serverError()
