@@ -26,10 +26,10 @@ const makeAddAccountUseCaseStub = (): IAddAccountUseCase => {
   class AddAccountUseCase implements IAddAccountUseCase {
     addAccount(addAccountDTO: IAddAccountDTO): IAccountEntitie {
       const createdFakeAccount: IAccountEntitie = {
-        id: 'any_id',
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
         created_at: new Date('2001-01-01 00:00'),
         updated_at: new Date('2001-01-01 00:00'),
       }
@@ -244,5 +244,32 @@ describe('SignUp Controller', () => {
     const httpResponse: IHttpResponse = sut.handle(httpRequest)
 
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Should call AddAccountUseCase with correct information', () => {
+    const { sut }: ISut = makeSut()
+    const httpRequest: IHttpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    }
+
+    const createdAccount: IAccountEntitie = {
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+      created_at: new Date('2001-01-01 00:00'),
+      updated_at: new Date('2001-01-01 00:00'),
+    }
+
+    const response: IHttpResponse = sut.handle(httpRequest)
+    expect(response).toEqual({
+      statusCode: 201,
+      body: createdAccount,
+    })
   })
 })
