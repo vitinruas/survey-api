@@ -43,6 +43,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('name'))
   })
+
   test('Should return 400 if no email is provided', () => {
     const {sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
@@ -58,6 +59,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('email'))
   })
+
   test('Should return 400 if no password is provided', () => {
     const {sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
@@ -73,6 +75,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('password'))
   })
+
   test('Should return 400 if no passwordConfirmation is provided', () => {
     const {sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
@@ -88,6 +91,24 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('passwordConfirmation'))
   })
+
+  test('Should return 400 if provided passwords do not match', () => {
+    const {sut }: ISut = makeSut()
+    const httpRequest: IHttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'different_password'
+      },
+    }
+
+    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new InvalidFieldError('passwordConfirmation'))
+  })
+
   test('Should return 400 if an invalid email is provided', () => {
     const {sut, emailValidatorStub }: ISut = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
@@ -105,6 +126,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidFieldError('email'))
   })
+
   test('Should call EmailValidatorAdapter with correct information', () => {
     const {sut, emailValidatorStub }: ISut = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
@@ -121,6 +143,7 @@ describe('SignUp Controller', () => {
 
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
+
   test('Should return 500 if EmailValidatorAdapter throws an error', () => {
     const { sut, emailValidatorStub } = makeSut()
     // we are changing a mocked class method to throw an error.
