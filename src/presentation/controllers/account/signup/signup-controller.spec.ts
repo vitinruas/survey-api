@@ -1,13 +1,17 @@
+import {
+  MissingFieldError,
+  InvalidFieldError,
+  ServerError,
+} from '../../../errors'
 import { SignUpController } from './signup-controller'
 import {
-  IEmailValidatorAdapter,
   IHttpRequest,
   IHttpResponse,
-} from '../../interfaces/index'
-import { IAddAccountUseCase } from '../../../domain/usecase/add-account-usecase'
-import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
-import { IAccountEntitie } from '../../../domain/entities/account-entitie'
-import { MissingFieldError, InvalidFieldError, ServerError } from '../../errors'
+  IEmailValidatorAdapter,
+  IAddAccountUseCase,
+  IAddAccountDTO,
+  IAccountEntitie,
+} from './signup-controller-protocols'
 
 const makeEmailValidatorStub = (): IEmailValidatorAdapter => {
   class EmailValidatorStub {
@@ -178,7 +182,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 500 if EmailValidatorAdapter throws an error', () => {
-    const { sut, emailValidatorStub } = makeSut()
+    const { sut, emailValidatorStub }: ISut = makeSut()
     // we are changing a mocked class method to throw an error.
     jest
       .spyOn(emailValidatorStub, 'isValid')

@@ -1,13 +1,13 @@
-import { badRequest, serverError } from '../../helper/http-helper'
-import { MissingFieldError, InvalidFieldError } from '../../errors'
+import { badRequest, serverError } from '../../../helper/http-helper'
+import { MissingFieldError, InvalidFieldError } from '../../../errors'
 import {
   IController,
-  IEmailValidatorAdapter,
   IHttpRequest,
   IHttpResponse,
-} from '../../interfaces/index'
-import { IAddAccountUseCase } from '../../../domain/usecase/add-account-usecase'
-import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
+  IEmailValidatorAdapter,
+  IAddAccountUseCase,
+  IAddAccountDTO,
+} from './signup-controller-protocols'
 
 export class SignUpController implements IController {
   constructor(
@@ -24,6 +24,7 @@ export class SignUpController implements IController {
         'passwordConfirmation',
       ]
 
+      // check if all required fields have been provided
       for (const field of requiredFields) {
         if (!httpRequest.body[field])
           return badRequest(new MissingFieldError(field))
@@ -31,14 +32,16 @@ export class SignUpController implements IController {
 
       const { name, email, password, passwordConfirmation } = httpRequest.body
 
+      // check if provided passwords match
       if (password !== passwordConfirmation)
         return badRequest(new InvalidFieldError('passwordConfirmation'))
 
+      // check if provided email is valid
       const emailIsValid = this.emailValidatorAdapter.isValid(email)
       if (!emailIsValid) return badRequest(new InvalidFieldError('email'))
 
+      // call a method class which knows how to create an user account
       const addAccountDTO: IAddAccountDTO = { name, email, password }
-
       this.addAccountUseCase.addAccount(addAccountDTO)
 
       return {

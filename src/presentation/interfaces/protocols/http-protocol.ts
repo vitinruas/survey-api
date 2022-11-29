@@ -3,6 +3,6 @@ export interface IHttpRequest {
 }
 
 export interface IHttpResponse {
-  statusCode: number,
+  statusCode: number
   body?: any
 }

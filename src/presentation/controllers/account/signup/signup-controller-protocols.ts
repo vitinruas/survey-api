@@ -1,0 +1,5 @@
+export * from '../../../interfaces/index'
+export * from '../../../interfaces/dependencies/email-validator-adapter-dependency'
+export * from '../../../../domain/usecase/add-account-usecase'
+export * from '../../../../domain/dtos/add-account-dto'
+export * from '../../../../domain/entities/account-entitie'
