@@ -7,6 +7,7 @@ import {
   IEmailValidatorAdapter,
   IAddAccountUseCase,
   IAddAccountDTO,
+  IAccountEntitie,
 } from './signup-controller-protocols'
 
 export class SignUpController implements IController {
@@ -42,10 +43,11 @@ export class SignUpController implements IController {
 
       // call a method class which knows how to create an user account
       const addAccountDTO: IAddAccountDTO = { name, email, password }
-      this.addAccountUseCase.addAccount(addAccountDTO)
-
+      const createdAccount: IAccountEntitie =
+        this.addAccountUseCase.addAccount(addAccountDTO)
       return {
         statusCode: 201,
+        body: createdAccount,
       }
     } catch (error) {
       console.error(error)
