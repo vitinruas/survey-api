@@ -13,6 +13,9 @@ export class SignUpController implements IController {
         return badRequest(new MissingFieldError(field))
     }
 
+    if (httpRequest.body.password !== httpRequest.body.passwordConfirmation)
+      return badRequest(new InvalidFieldError('passwordConfirmation'))
+
     const emailIsValid = this.emailValidatorAdapter.isValid(httpRequest.body.email)
     if (!emailIsValid)
       return badRequest(new InvalidFieldError('email'))
