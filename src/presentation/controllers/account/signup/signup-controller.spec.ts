@@ -24,7 +24,7 @@ const makeEmailValidatorStub = (): IEmailValidatorAdapter => {
 
 const makeAddAccountUseCaseStub = (): IAddAccountUseCase => {
   class AddAccountUseCase implements IAddAccountUseCase {
-    addAccount(addAccountDTO: IAddAccountDTO): IAccountEntitie {
+    async addAccount(addAccountDTO: IAddAccountDTO): Promise<IAccountEntitie> {
       const createdFakeAccount: IAccountEntitie = {
         id: 'valid_id',
         name: 'valid_name',
@@ -34,7 +34,7 @@ const makeAddAccountUseCaseStub = (): IAddAccountUseCase => {
         updated_at: new Date('2001-01-01 00:00'),
       }
 
-      return createdFakeAccount
+      return Promise.resolve(createdFakeAccount)
     }
   }
   return new AddAccountUseCase()
@@ -61,7 +61,7 @@ const makeSut = (): ISut => {
 }
 
 describe('SignUp Controller', () => {
-  test('Should return 400 if no name is provided', () => {
+  test('Should return 400 if no name is provided', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -71,13 +71,13 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('name'))
   })
 
-  test('Should return 400 if no email is provided', () => {
+  test('Should return 400 if no email is provided', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -87,13 +87,13 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('email'))
   })
 
-  test('Should return 400 if no password is provided', () => {
+  test('Should return 400 if no password is provided', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -103,13 +103,13 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingFieldError('password'))
   })
 
-  test('Should return 400 if no passwordConfirmation is provided', () => {
+  test('Should return 400 if no passwordConfirmation is provided', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -119,7 +119,7 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(
@@ -127,7 +127,7 @@ describe('SignUp Controller', () => {
     )
   })
 
-  test('Should return 400 if provided passwords do not match', () => {
+  test('Should return 400 if provided passwords do not match', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -138,7 +138,7 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(
@@ -146,7 +146,7 @@ describe('SignUp Controller', () => {
     )
   })
 
-  test('Should call EmailValidatorAdapter with correct information', () => {
+  test('Should call EmailValidatorAdapter with correct information', async () => {
     const { sut, emailValidatorStub }: ISut = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
     const httpRequest: IHttpRequest = {
@@ -158,12 +158,12 @@ describe('SignUp Controller', () => {
       },
     }
 
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
 
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
-  test('Should return 400 if an invalid email is provided', () => {
+  test('Should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub }: ISut = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpRequest: IHttpRequest = {
@@ -175,13 +175,13 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidFieldError('email'))
   })
 
-  test('Should return 500 if EmailValidatorAdapter throws an error', () => {
+  test('Should return 500 if EmailValidatorAdapter throws an error', async () => {
     const { sut, emailValidatorStub }: ISut = makeSut()
     // we are changing a mocked class method to throw an error.
     jest
@@ -198,12 +198,12 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('Should call AddAccountUseCase with correct information', () => {
+  test('Should call AddAccountUseCase with correct information', async () => {
     const { sut, addAccountUseCaseStub }: ISut = makeSut()
     const addAccountSpy = jest.spyOn(addAccountUseCaseStub, 'addAccount')
     const httpRequest: IHttpRequest = {
@@ -215,7 +215,7 @@ describe('SignUp Controller', () => {
       },
     }
 
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
 
     expect(addAccountSpy).toHaveBeenCalledWith({
       name: 'any_name',
@@ -224,14 +224,14 @@ describe('SignUp Controller', () => {
     })
   })
 
-  test('Should return 500 if AddAccountUseCase throws an error', () => {
+  test('Should return 500 if AddAccountUseCase throws an error', async () => {
     const { sut, addAccountUseCaseStub }: ISut = makeSut()
     // we are changing a mocked class method to throw an error.
     jest
       .spyOn(addAccountUseCaseStub, 'addAccount')
-      .mockImplementationOnce((): never => {
-        throw new Error()
-      })
+      .mockImplementationOnce(
+        async (): Promise<never> => Promise.reject(new Error())
+      )
     const httpRequest: IHttpRequest = {
       body: {
         name: 'any_name',
@@ -241,12 +241,12 @@ describe('SignUp Controller', () => {
       },
     }
 
-    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+    const httpResponse: IHttpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('Should call AddAccountUseCase with correct information', () => {
+  test('Should call AddAccountUseCase with correct information', async () => {
     const { sut }: ISut = makeSut()
     const httpRequest: IHttpRequest = {
       body: {
@@ -266,7 +266,7 @@ describe('SignUp Controller', () => {
       updated_at: new Date('2001-01-01 00:00'),
     }
 
-    const response: IHttpResponse = sut.handle(httpRequest)
+    const response: IHttpResponse = await sut.handle(httpRequest)
     expect(response).toEqual({
       statusCode: 201,
       body: createdAccount,

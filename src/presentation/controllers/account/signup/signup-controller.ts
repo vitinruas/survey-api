@@ -16,7 +16,7 @@ export class SignUpController implements IController {
     private readonly addAccountUseCase: IAddAccountUseCase
   ) {}
 
-  handle(httpRequest: IHttpRequest): IHttpResponse {
+  async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
       const requiredFields = [
         'name',
@@ -44,7 +44,7 @@ export class SignUpController implements IController {
       // call a method class which knows how to create an user account and return it
       const addAccountDTO: IAddAccountDTO = { name, email, password }
       const createdAccount: IAccountEntitie =
-        this.addAccountUseCase.addAccount(addAccountDTO)
+        await this.addAccountUseCase.addAccount(addAccountDTO)
 
       return created(createdAccount)
     } catch (error) {
