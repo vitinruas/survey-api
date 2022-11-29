@@ -30,7 +30,9 @@ module.exports = {
     "\\\\node_modules\\\\",
     "-error.ts",
     "-dependency.ts",
-    "-protocol.ts"
+    "-protocol.ts",
+    "-protocols.ts",
+    "src/domain/"
   ],
 
   // Indicates which provider should be used to instrument code for coverage

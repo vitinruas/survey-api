@@ -223,4 +223,26 @@ describe('SignUp Controller', () => {
       password: 'any_password',
     })
   })
+
+  test('Should return 500 if AddAccountUseCase throws an error', () => {
+    const { sut, addAccountUseCaseStub }: ISut = makeSut()
+    // we are changing a mocked class method to throw an error.
+    jest
+      .spyOn(addAccountUseCaseStub, 'addAccount')
+      .mockImplementationOnce((): never => {
+        throw new Error()
+      })
+    const httpRequest: IHttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+      },
+    }
+
+    const httpResponse: IHttpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
