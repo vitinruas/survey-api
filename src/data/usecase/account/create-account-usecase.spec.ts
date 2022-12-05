@@ -1,6 +1,6 @@
 import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
 import { IAccountEntitie } from '../../../domain/entities/account-entitie'
-import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter'
+import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter-dependency'
 import { CreateAccountUseCase } from './create-account-usecase'
 
 const makeEncrypterAdapterStub = (): IEncrypterAdapter => {

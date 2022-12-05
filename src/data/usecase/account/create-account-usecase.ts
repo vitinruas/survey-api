@@ -1,7 +1,7 @@
 import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
 import { IAccountEntitie } from '../../../domain/entities/account-entitie'
 import { IAddAccountUseCase } from '../../../domain/usecase/add-account-usecase'
-import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter'
+import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter-dependency'
 
 export class CreateAccountUseCase implements IAddAccountUseCase {
   constructor(private readonly encrypterAdapter: IEncrypterAdapter) {}
