@@ -1,4 +1,5 @@
 import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
+import { IAccountEntitie } from '../../../domain/entities/account-entitie'
 import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter'
 import { CreateAccountUseCase } from './create-account-usecase'
 
@@ -26,7 +27,7 @@ const makeSut = (): ISut => {
 }
 
 describe('CreateAccountUseCase', () => {
-  test('Should call Encrypter with correct information', async () => {
+  test('Should call EncrypterAdapter with correct information', async () => {
     const { sut, encrypterAdapterStub } = makeSut()
     const encryptSpy = jest.spyOn(encrypterAdapterStub, 'encrypt')
     const accountData: IAddAccountDTO = {
@@ -36,6 +37,24 @@ describe('CreateAccountUseCase', () => {
     }
 
     await sut.addAccount(accountData)
+
     expect(encryptSpy).toHaveBeenCalledWith('valid_password')
+  })
+
+  test('Should throw an error if EncrypterAdapter throws an error', async () => {
+    const { sut, encrypterAdapterStub } = makeSut()
+    jest
+      .spyOn(encrypterAdapterStub, 'encrypt')
+      .mockImplementationOnce(
+        async (): Promise<never> => Promise.reject(new Error())
+      )
+    const accountData: IAddAccountDTO = {
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+    }
+
+    const throwAccount: Promise<IAccountEntitie> = sut.addAccount(accountData)
+    await expect(throwAccount).rejects.toThrow()
   })
 })
