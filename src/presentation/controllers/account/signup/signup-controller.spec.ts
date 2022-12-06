@@ -11,7 +11,7 @@ import {
   IAddAccountUseCase,
   IAddAccountDTO,
   IAccountEntitie,
-} from './signup-controller-protocols'
+} from './signup-controller-dependencies'
 
 const makeEmailValidatorStub = (): IEmailValidatorAdapter => {
   class EmailValidatorStub {

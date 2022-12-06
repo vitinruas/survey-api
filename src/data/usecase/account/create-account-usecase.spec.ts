@@ -1,7 +1,9 @@
-import { IAddAccountDTO } from '../../../domain/dtos/add-account-dto'
-import { IAccountEntitie } from '../../../domain/entities/account-entitie'
-import { IEncrypterAdapter } from '../../interfaces/dependencies/account/encrypter-adapter-dependency'
 import { CreateAccountUseCase } from './create-account-usecase'
+import {
+  IAddAccountDTO,
+  IAccountEntitie,
+  IEncrypterAdapter,
+} from './create-account-usecase-dependencies'
 
 const makeEncrypterAdapterStub = (): IEncrypterAdapter => {
   class EncrypterAdapterStub implements IEncrypterAdapter {

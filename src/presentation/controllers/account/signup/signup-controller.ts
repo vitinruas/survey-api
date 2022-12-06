@@ -8,7 +8,7 @@ import {
   IAddAccountUseCase,
   IAddAccountDTO,
   IAccountEntitie,
-} from './signup-controller-protocols'
+} from './signup-controller-dependencies'
 
 export class SignUpController implements IController {
   constructor(
