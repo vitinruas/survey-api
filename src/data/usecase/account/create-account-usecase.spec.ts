@@ -96,4 +96,19 @@ describe('CreateAccountUseCase', () => {
       password: 'hashed_password',
     })
   })
+
+  test('Should throw an error if AddAccountRepository throws an error', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    jest
+      .spyOn(addAccountRepositoryStub, 'addAccount')
+      .mockImplementationOnce(async (): Promise<never> => Promise.reject(new Error()))
+    const accountData: IAddAccountDTO = {
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+    }
+
+    const throwAccount: Promise<IAccountEntitie> = sut.addAccount(accountData)
+    await expect(throwAccount).rejects.toThrow()
+  })
 })
