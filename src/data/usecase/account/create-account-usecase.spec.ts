@@ -111,4 +111,24 @@ describe('CreateAccountUseCase', () => {
     const throwAccount: Promise<IAccountEntitie> = sut.addAccount(accountData)
     await expect(throwAccount).rejects.toThrow()
   })
+
+  test('Should return an account if all steps succeeds', async () => {
+    const { sut } = makeSut()
+    const accountData: IAddAccountDTO = {
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+    }
+
+    const createdAccount = await sut.addAccount(accountData)
+
+    expect(createdAccount).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+      created_at: new Date('2001-01-01 00:00'),
+      updated_at: new Date('2001-01-01 00:00'),
+    })
+  })
 })
