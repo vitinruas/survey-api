@@ -3,12 +3,18 @@ import {
   IAddAccountDTO,
   IAccountEntitie,
   IEncrypterAdapter,
+  IAddAccountRepository,
 } from './create-account-usecase-dependencies'
 
 export class CreateAccountUseCase implements IAddAccountUseCase {
-  constructor(private readonly encrypterAdapter: IEncrypterAdapter) {}
+  constructor(
+    private readonly encrypterAdapter: IEncrypterAdapter,
+    private readonly addAccountRepository: IAddAccountRepository
+  ) {}
+
   async addAccount(account: IAddAccountDTO): Promise<IAccountEntitie> {
-    await this.encrypterAdapter.encrypt(account.password)
+    const password: string = await this.encrypterAdapter.encrypt(account.password)
+    await this.addAccountRepository.addAccount(Object.assign({}, account, { password }))
     return Promise.resolve({
       id: 'valid_id',
       name: 'valid_name',
