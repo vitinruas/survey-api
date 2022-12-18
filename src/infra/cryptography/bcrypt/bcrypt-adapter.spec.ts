@@ -28,4 +28,12 @@ describe('Bcrypt Adapter', () => {
 
     await expect(hash).rejects.toThrow()
   })
+
+  test('Should return a hash if all steps have been successful', async () => {
+    const sut: IEncrypterAdapter = new BcryptAdapter(12)
+
+    const hash = await sut.encrypt('data')
+
+    expect(hash).toBe('hash')
+  })
 })
