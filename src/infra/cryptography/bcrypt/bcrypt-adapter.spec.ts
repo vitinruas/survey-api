@@ -17,4 +17,15 @@ describe('Bcrypt Adapter', () => {
 
     expect(hashSpy).toHaveBeenCalledWith('data', 12)
   })
+
+  test('Should throws an error if Bcrypt throws an error', async () => {
+    const sut: IEncrypterAdapter = new BcryptAdapter(12)
+    jest
+      .spyOn(Bcrypt, 'hash')
+      .mockImplementationOnce(async (): Promise<never> => Promise.reject(new Error()))
+
+    const hash = sut.encrypt('data')
+
+    await expect(hash).rejects.toThrow()
+  })
 })
