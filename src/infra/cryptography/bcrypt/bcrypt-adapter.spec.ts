@@ -1,4 +1,3 @@
-import { IEncrypterAdapter } from '../../../data/usecase/account/create-account-usecase-dependencies'
 import { BcryptAdapter } from './bcrypt-adapter'
 import Bcrypt from 'bcrypt'
 
@@ -8,9 +7,15 @@ jest.mock('Bcrypt', () => ({
   },
 }))
 
+const makeSut = (): BcryptAdapter => {
+  const salt: number = 12
+  const sut = new BcryptAdapter(salt)
+  return sut
+}
+
 describe('Bcrypt Adapter', () => {
   test('Should call Bcrypt with correct information', async () => {
-    const sut: IEncrypterAdapter = new BcryptAdapter(12)
+    const sut: BcryptAdapter = makeSut()
     const hashSpy = jest.spyOn(Bcrypt, 'hash')
 
     await sut.encrypt('data')
@@ -19,7 +24,7 @@ describe('Bcrypt Adapter', () => {
   })
 
   test('Should throws an error if Bcrypt throws an error', async () => {
-    const sut: IEncrypterAdapter = new BcryptAdapter(12)
+    const sut: BcryptAdapter = makeSut()
     jest
       .spyOn(Bcrypt, 'hash')
       .mockImplementationOnce(async (): Promise<never> => Promise.reject(new Error()))
@@ -30,7 +35,7 @@ describe('Bcrypt Adapter', () => {
   })
 
   test('Should return a hash if all steps have been successful', async () => {
-    const sut: IEncrypterAdapter = new BcryptAdapter(12)
+    const sut: BcryptAdapter = makeSut()
 
     const hash = await sut.encrypt('data')
 
