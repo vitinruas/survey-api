@@ -12,6 +12,11 @@ describe('MongoDBAccountRepository', () => {
     await mongodb.disconnect()
   })
 
+  beforeEach(async () => {
+    const collection = mongodb.getCollection('accounts')
+    await collection.deleteMany({})
+  })
+
   test('Should return an account wheter all steps have been successful', async () => {
     const sut = new MongoDBAccountRepository(mongodb)
 
