@@ -1,4 +1,4 @@
-import { IEncrypterAdapter } from '../../../data/usecase/account/create-account-usecase-dependencies'
+import { IEncrypterAdapter } from '../../../data/usecase/account/create/create-account-usecase-dependencies'
 import Bcrypt from 'bcrypt'
 
 export class BcryptAdapter implements IEncrypterAdapter {

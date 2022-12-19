@@ -17,7 +17,7 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
@@ -29,10 +29,13 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '\\\\node_modules\\\\',
     '-error.ts',
-    '-dependency.ts',
-    '-dependencies.ts',
+    '-helper.ts',
     '-protocol.ts',
     '-protocols.ts',
+    '-dependency.ts',
+    '-dependencies.ts',
+    '.test.ts',
+    '.spec.ts',
     'src/domain/',
   ],
 
