@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
+import { MongoDBHelper } from '../helpers/mongodb-helper'
 import {
   FieldToLookUp,
-  IGetAccountRepository,
-  TypeFieldsToRemove,
-} from '../../../../data/interfaces/dependencies/account/get-account-repository-dependency'
-import {
   IAccountEntitie,
   IAddAccountModel,
   IAddAccountRepository,
-} from '../../../../data/usecase/account/create/create-account-usecase-dependencies'
-import { MongoDBHelper } from '../helpers/mongodb-helper'
+  IGetAccountRepository,
+  TypeFieldsToRemove,
+} from './mongodb-account-repository-dependencies'
 
 export class MongoDBAccountRepository implements IAddAccountRepository, IGetAccountRepository {
   constructor(private readonly mongodb: MongoDBHelper) {}

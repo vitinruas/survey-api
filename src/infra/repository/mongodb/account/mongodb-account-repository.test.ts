@@ -1,4 +1,4 @@
-import { IAccountEntitie } from '../../../../domain/entities/account-entitie'
+import { IAccountEntitie } from './mongodb-account-repository-dependencies'
 import { MongoDBHelper } from '../helpers/mongodb-helper'
 import { MongoDBAccountRepository } from './mongodb-account-repository'
 
