@@ -2,6 +2,10 @@ import { IAccountEntitie } from './mongodb-account-repository-dependencies'
 import { MongoDBHelper } from '../helpers/mongodb-helper'
 import { MongoDBAccountRepository } from './mongodb-account-repository'
 
+const createSut = (): MongoDBAccountRepository => {
+  return new MongoDBAccountRepository(MongoDBHelper.instance)
+}
+
 describe('MongoDBAccountRepository', () => {
   const mongodb = MongoDBHelper.instance
   beforeAll(async () => {
@@ -18,7 +22,7 @@ describe('MongoDBAccountRepository', () => {
   })
 
   test('Should return an account wheter all steps have been successful', async () => {
-    const sut = new MongoDBAccountRepository(mongodb)
+    const sut = createSut()
 
     const account: IAccountEntitie = await sut.addAccount({
       name: 'any_name',
