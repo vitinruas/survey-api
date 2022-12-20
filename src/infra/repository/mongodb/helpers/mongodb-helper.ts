@@ -13,11 +13,14 @@ class MongoDBHelper {
     return this._instance
   }
 
-  async connect(url: string): Promise<void> {
+  async connect(): Promise<void> {
     this.client = await MongoClient.connect(process.env.MONGO_URL as string)
   }
 
-  getCollection(collectionName: string): Collection {
+  async getCollection(collectionName: string): Promise<Collection> {
+    if (!this.client) {
+      await this.connect()
+    }
     return this.client?.db().collection(collectionName) as Collection
   }
 

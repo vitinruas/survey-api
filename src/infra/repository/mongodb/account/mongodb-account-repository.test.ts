@@ -9,7 +9,7 @@ const createSut = (): MongoDBAccountRepository => {
 describe('MongoDBAccountRepository', () => {
   const mongodb = MongoDBHelper.instance
   beforeAll(async () => {
-    await mongodb.connect(process.env.MONGO_URL as string)
+    await mongodb.connect()
   })
 
   afterAll(async () => {
@@ -17,7 +17,7 @@ describe('MongoDBAccountRepository', () => {
   })
 
   beforeEach(async () => {
-    const collection = mongodb.getCollection('accounts')
+    const collection = await mongodb.getCollection('accounts')
     await collection.deleteMany({})
   })
 

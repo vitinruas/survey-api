@@ -13,7 +13,7 @@ export class MongoDBAccountRepository implements IAddAccountRepository, IGetAcco
   constructor(private readonly mongodb: MongoDBHelper) {}
   async addAccount(account: IAddAccountModel): Promise<IAccountEntitie> {
     // insert a user and return their data
-    const collection = this.mongodb.getCollection('accounts')
+    const collection = await this.mongodb.getCollection('accounts')
     const result = await collection.insertOne(
       Object.assign({
         _id: this.mongodb.createObjectID(),
@@ -38,7 +38,7 @@ export class MongoDBAccountRepository implements IAddAccountRepository, IGetAcco
     fieldsToRemove?: TypeFieldsToRemove
   ): Promise<IAccountEntitie | null> {
     // look up user information from a collection
-    const collection = this.mongodb.getCollection('accounts')
+    const collection = await this.mongodb.getCollection('accounts')
 
     // create a fields object to be removed
     if (fieldsToRemove?.length) {
