@@ -9,7 +9,7 @@ const createSut = (): MongoDBAccountRepository => {
 describe('MongoDBAccountRepository', () => {
   const mongodb = MongoDBHelper.instance
   beforeAll(async () => {
-    await mongodb.connect()
+    await mongodb.connect(process.env.MONGO_URL as string)
   })
 
   afterAll(async () => {
