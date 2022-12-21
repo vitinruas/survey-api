@@ -3,11 +3,8 @@ import { IController, IHttpRequest, IHttpResponse } from '../../presentation/int
 class LogControllerDecorator implements IController {
   constructor(private readonly controller: IController) {}
   async handle(request: IHttpRequest): Promise<IHttpResponse> {
-    await this.controller.handle(request)
-    return {
-      statusCode: 200,
-      body: {},
-    }
+    const httpResponse: IHttpResponse = await this.controller.handle(request)
+    return httpResponse
   }
 }
 
