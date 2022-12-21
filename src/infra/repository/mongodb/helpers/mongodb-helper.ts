@@ -17,19 +17,26 @@ class MongoDBHelper {
     this.client = await MongoClient.connect(url)
   }
 
+  async isConnected(): Promise<boolean> {
+    try {
+      const isConnected = await this.client?.db().admin().ping()
+      return !!isConnected
+    } catch (error) {}
+    return false
+  }
+
+  async disconnect(): Promise<void> {
+    await this.client?.close()
+  }
+
   async getCollection(collectionName: string): Promise<Collection> {
-    if (!this.client) {
-      await this.connect(process.env.MONGO_URL as string)
-    }
+    const isConnected = await this.isConnected()
+    if (!isConnected) await this.connect(process.env.MONGO_URL as string)
     return this.client?.db().collection(collectionName) as Collection
   }
 
   createObjectID(id?: string): ObjectId {
     return id ? new ObjectId(id) : new ObjectId()
-  }
-
-  async disconnect(): Promise<void> {
-    await this.client?.close()
   }
 
   changeMongoID(document: any): any {
