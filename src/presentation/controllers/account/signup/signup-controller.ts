@@ -18,17 +18,11 @@ export class SignUpController implements IController {
 
   async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
-      const requiredFields = [
-        'name',
-        'email',
-        'password',
-        'passwordConfirmation',
-      ]
+      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
 
       // check if all required fields have been provided
       for (const field of requiredFields) {
-        if (!httpRequest.body[field])
-          return badRequest(new MissingFieldError(field))
+        if (!httpRequest.body[field]) return badRequest(new MissingFieldError(field))
       }
 
       const { name, email, password, passwordConfirmation } = httpRequest.body
@@ -43,13 +37,12 @@ export class SignUpController implements IController {
 
       // call a method class which knows how to create an user account and return it
       const addAccountDTO: IAddAccountDTO = { name, email, password }
-      const createdAccount: IAccountEntitie =
-        await this.addAccountUseCase.addAccount(addAccountDTO)
+      const createdAccount: IAccountEntitie = await this.addAccountUseCase.addAccount(addAccountDTO)
 
       return created(createdAccount)
     } catch (error) {
       console.error(error)
-      return serverError()
+      return serverError(error as Error)
     }
   }
 }
