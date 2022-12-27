@@ -1,12 +1,9 @@
-import { ILoggerRepository } from '../../data/interfaces/dependencies/protocols/logger-repository-protocol'
+import { IErrorLoggerRepository } from '../../data/interfaces/dependencies/protocols/error-logger-repository-protocol'
 import { ServerError } from '../../presentation/errors'
 import { IController, IHttpRequest, IHttpResponse } from '../../presentation/interfaces'
 
 class LogControllerDecorator implements IController {
-  constructor(
-    private readonly controller: IController,
-    private readonly loggerRepository: ILoggerRepository
-  ) {}
+  constructor(private readonly controller: IController, private readonly loggerRepository: IErrorLoggerRepository) {}
 
   async handle(request: IHttpRequest): Promise<IHttpResponse> {
     const httpResponse: IHttpResponse = await this.controller.handle(request)

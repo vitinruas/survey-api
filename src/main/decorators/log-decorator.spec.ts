@@ -1,10 +1,10 @@
-import { ILoggerRepository } from '../../data/interfaces/dependencies/protocols/logger-repository-protocol'
+import { IErrorLoggerRepository } from '../../data/interfaces/dependencies/protocols/error-logger-repository-protocol'
 import { serverError } from '../../presentation/helper/http-helper'
 import { IController, IHttpRequest, IHttpResponse } from '../../presentation/interfaces'
 import { LogControllerDecorator } from './log-decorator'
 
-const makeLoggerRepositoryStub = (): ILoggerRepository => {
-  class LoggerRepositoryStub implements ILoggerRepository {
+const makeLoggerRepositoryStub = (): IErrorLoggerRepository => {
+  class LoggerRepositoryStub implements IErrorLoggerRepository {
     async logError(stack: string): Promise<void> {
       return Promise.resolve()
     }
@@ -23,17 +23,14 @@ const makeControllerStub = (): IController => {
 
 interface ISut {
   controllerStub: IController
-  loggerRepositoryStub: ILoggerRepository
+  loggerRepositoryStub: IErrorLoggerRepository
   sut: LogControllerDecorator
 }
 
 const makeSut = (): ISut => {
   const controllerStub: IController = makeControllerStub()
-  const loggerRepositoryStub: ILoggerRepository = makeLoggerRepositoryStub()
-  const sut: LogControllerDecorator = new LogControllerDecorator(
-    controllerStub,
-    loggerRepositoryStub
-  )
+  const loggerRepositoryStub: IErrorLoggerRepository = makeLoggerRepositoryStub()
+  const sut: LogControllerDecorator = new LogControllerDecorator(controllerStub, loggerRepositoryStub)
   return {
     controllerStub,
     loggerRepositoryStub,
